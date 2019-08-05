@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 m-auto">
+      <h1 class="text-center display-4 my-4">Mongo File Uploads</h1>
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+        <div class="custom-file mb-3">
+          <input type="file" name="file" id="file" class="multipart/form-data">
+          <label for="file" type="file" class="custom-file-label"></label>
+        </div>
+        <input type="submit" value="Submit" class="btn btn-primary btn-block">
+      </form>
+      <hr>
+      {{#if files}}
+
+      {{#each files}}
+    
+      <div class="card card-body mb-3">
+        <a href="/image/{{this.filename}}">
+          <img src="{{name}}" alt="{{name}}"style="width:100%;"></a>
+      </div>
+      <button class="btn btn-danger delte btn-block mt-4" id={{this._id}}>Delete</button>
+     
+      {{/each}}
+
+      {{else}}
+      <div class="card card-body mb-3">
+        <h1>No files to show</h1>
+      </div>
+      {{/if}}
+    </div>
+  </div>
+</div>
+<script>
+  $(".delte").click(function () {
+    console.log(this.id)
+    $.post(`/files/delete/${this.id}`, function () {
+      location.reload()
+    })
+  })
+</script>
