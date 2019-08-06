@@ -3,54 +3,19 @@ const storage = require('./multer')
 let upload = multer({ storage: storage });
 module.exports = function (app) {
     app.get('/', (req, res) => {
+        console.log("hit")
         db.query("SELECT * FROM file", function (err, results) {
             let files = results
+            console.log(files)
             if (err) { console.log(err) }
-            else if (results.length) {
+            else  {
                 console.log(files)
                 res.render('index', { files });
             }
-
+            
         })
-        // res.render('index', message);
-        //     gfs.files.find().toArray((err, files) => {
-        //         // Check if files
-        //         if (!files || files.length === 0) {
-        //             res.render('index', { files: false });
-        //         } else {
-        //             files.map(file => {
-        //                 if (
-        //                     file.contentType === 'image/jpeg' ||
-        //                     file.contentType === 'image/png'
-        //                 ) {
-        //                     file.isImage = true;
-        //                     file.isVideo = false;
-        //                 }
-        //                 else if (file.contentType === 'video/mp4') {
-        //                     file.isImage = false;
-        //                     file.isVideo = true;
-        //                 } else {
-        //                     file.isImage = false;
-        //                     file.isVideo = true;
-        //                 }
-        //             });
-        //             // console.log(files)
-        //             // res.render('index', {files: files});
-        //             res.render('index', { files });
-        //         }
-        //     });
-        // });
-
-        // // @route POST /upload
-        // // @desc  Uploads file to DB
-        // app.post('/upload', upload.single('file'), (req, res) => {
-        //     // res.json({ file: req.file });
-        //     res.redirect('/');
     })
     message = ''
-    // app.get('/', function(req, res) {
-    //     res.render('index', message);
-    // });
     app.post('/upload', upload.single('file'), function (req, res) {
         console.log(req.profile)
         // upload.single('profile')
@@ -64,7 +29,7 @@ module.exports = function (app) {
         } else {
             console.log('file received');
             console.log(req);
-            var sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + req.file.filename + "', '" + req.file.mimetype + "', '" + req.file.size + "')";
+            let sql = "INSERT INTO `file`(`name`, `type`, `size`) VALUES ('" + req.file.filename + "', '" + req.file.mimetype + "', '" + req.file.size + "')";
 
             var query = db.query(sql, function (err, result) {
                 if (err) {
@@ -73,8 +38,19 @@ module.exports = function (app) {
 
             });
             message = "Successfully! uploaded";
-            res.render('index', { message: message, status: 'success' });
+            res.redirect('/');
 
         }
     });
+    app.post('/api/delete', (req,res)=>{
+        let id =req.body.id
+        let sql = `DELETE FROM file WHERE id = ${id}`
+        db.query(sql,(err, results)=>{
+            if(err) console.log(err)
+            else{
+                console.log('beleted')
+                res.sendStatus(200)
+            }
+        })
+    })
 }

@@ -16,15 +16,9 @@ var connection = mysql.createConnection({
 connection.connect();
  
 global.db = connection;
- 
-
- 
-
- 
 // all environments
 const PORT = process.env.PORT || 8010;
 app.set('port', process.env.PORT || PORT);
-// app.use(methodOverride('_method'));
 var exphbs = require("express-handlebars");
 app.use(express.static('uploads'))
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
